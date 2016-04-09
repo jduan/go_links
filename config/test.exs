@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :go_links, GoLinks.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "jduan",
+  password: "jduan",
   database: "go_links_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
