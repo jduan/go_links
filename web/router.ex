@@ -18,6 +18,7 @@ defmodule GoLinks.Router do
 
     get "/", PageController, :index
     resources "/links", LinkController
+    get "/*path", RedirectController, :handle_redirect
   end
 
   # Other scopes may use custom stacks.
