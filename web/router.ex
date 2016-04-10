@@ -16,7 +16,7 @@ defmodule GoLinks.Router do
   scope "/", GoLinks do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", LinkController, :index
     resources "/links", LinkController
     get "/*path", RedirectController, :handle_redirect
   end

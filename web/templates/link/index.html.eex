@@ -1,4 +1,6 @@
-<h2>Listing links</h2>
+<%= link "New link", to: link_path(@conn, :new) %>
+
+<h2>Go links</h2>
 
 <table class="table">
   <thead>
@@ -26,5 +28,3 @@
 <% end %>
   </tbody>
 </table>
-
-<%= link "New link", to: link_path(@conn, :new) %>
