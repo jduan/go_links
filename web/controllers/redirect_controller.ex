@@ -1,4 +1,5 @@
 defmodule GoLinks.RedirectController do
+  require Logger
   use GoLinks.Web, :controller
 
   @placeholder "%s"
@@ -17,6 +18,7 @@ defmodule GoLinks.RedirectController do
   This is a simple redirect for just a name without additional placerholders.
   """
   defp do_redirect(conn, name, []) do
+    Logger.debug "Simple redirect without query strings"
     link = lookup_link(name)
 
     if link do
@@ -35,12 +37,15 @@ defmodule GoLinks.RedirectController do
   * "args" would be ["1234", "pretty"]
   """
   defp do_redirect(conn, name, args) do
+    Logger.debug "redirect #{name} with query strings: #{inspect args}"
     link = lookup_link(name)
 
     if link do
-      query_url = link.url
+      query_url = link.query_url
       case fill_query_url(query_url, args) do
-        {filled_url, :ok} -> redirect conn, external: filled_url
+        {filled_url, :ok} ->
+          Logger.debug "redirect to url: #{filled_url}"
+          redirect conn, external: filled_url
         {filled_url, :error} ->
           conn
           |> put_status(:bad_request)
