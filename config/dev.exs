@@ -35,8 +35,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :go_links, GoLinks.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "jduan",
+  password: "jduan",
   database: "go_links_dev",
   hostname: "localhost",
   pool_size: 10
