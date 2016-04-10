@@ -4,7 +4,8 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Url</th>
+      <th>URL</th>
+      <th>Query URL</th>
 
       <th></th>
     </tr>

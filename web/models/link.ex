@@ -22,16 +22,18 @@ defmodule GoLinks.Link do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> validate_change(:url, fn
-      :url, url ->
-        if valid_url?(url) do
-          Logger.debug "url is valid"
-          []
-        else
-          Logger.debug "url is invalid"
-          [url: "url #{url} is invalid2"]
-        end
-    end)
+    |> validate_change(:url, &url_validator/2)
+    |> validate_change(:query_url, &url_validator/2)
+  end
+
+  defp url_validator(url, value) do
+    if valid_url?(value) do
+      Logger.debug "#{inspect url} #{value} is valid"
+      []
+    else
+      Logger.debug "#{inspect url} #{value} is invalid"
+      [{url, "#{Atom.to_string url} '#{value}' is invalid"}]
+    end
   end
 
   defp valid_url?(url) do
