@@ -1,6 +1,10 @@
 defmodule GoLinks.ErrorView do
   use GoLinks.Web, :view
 
+  def render("400.html", _assigns) do
+    "Bad request: you didn't provide enough query strings"
+  end
+
   def render("404.html", _assigns) do
     "Page not found"
   end

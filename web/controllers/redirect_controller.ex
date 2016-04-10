@@ -38,10 +38,14 @@ defmodule GoLinks.RedirectController do
     link = lookup_link(name)
 
     if link do
-      query_url = link.query_url
-      filled_url = fill_query_url(query_url, args)
-
-      redirect conn, external: filled_url
+      query_url = link.url
+      case fill_query_url(query_url, args) do
+        {filled_url, :ok} -> redirect conn, external: filled_url
+        {filled_url, :error} ->
+          conn
+          |> put_status(:bad_request)
+          |> render(GoLinks.ErrorView, "400.html")
+      end
     else
       conn
       |> put_status(:not_found)
@@ -57,12 +61,20 @@ defmodule GoLinks.RedirectController do
   Given a query_url like "https://jira.fitbit.com/browse/IPD-%s/what/%s",
   fill the placeholders (%s) with the args.
   """
+  defp fill_query_url(query_url, []) do
+    if String.contains?(query_url, @placeholder) do
+      {query_url, :error}
+    else
+      {query_url, :ok}
+    end
+  end
+
   defp fill_query_url(query_url, [head | rest]) do
     if String.contains?(query_url, @placeholder) do
       replaced = String.replace(query_url, @placeholder, head, global: false)
       fill_query_url(replaced, rest)
     else
-      query_url
+      {query_url, :ok}
     end
   end
 end
