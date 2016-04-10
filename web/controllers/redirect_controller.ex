@@ -24,9 +24,7 @@ defmodule GoLinks.RedirectController do
     if link do
       redirect conn, external: link.url
     else
-      conn
-      |> put_status(:not_found)
-      |> render(GoLinks.ErrorView, "404.html")
+      not_found(conn)
     end
   end
 
@@ -42,20 +40,32 @@ defmodule GoLinks.RedirectController do
 
     if link do
       query_url = link.query_url
-      case fill_query_url(query_url, args) do
-        {filled_url, :ok} ->
-          Logger.debug "redirect to url: #{filled_url}"
-          redirect conn, external: filled_url
-        {filled_url, :error} ->
-          conn
-          |> put_status(:bad_request)
-          |> render(GoLinks.ErrorView, "400.html")
+      if query_url do
+        case fill_query_url(query_url, args) do
+          {filled_url, :ok} ->
+            Logger.debug "redirect to url: #{filled_url}"
+            redirect conn, external: filled_url
+          {_filled_url, :error} ->
+            bad_request(conn, "Bad request: you didn't provide enough query strings")
+        end
+      else
+        bad_request(conn, "Bad request: this 'go link' doesn't support query strings")
       end
     else
-      conn
-      |> put_status(:not_found)
-      |> render(GoLinks.ErrorView, "404.html")
+      not_found(conn)
     end
+  end
+
+  defp bad_request(conn, message) do
+    conn
+    |> put_status(:bad_request)
+    |> render(GoLinks.ErrorView, "400.html", message: message)
+  end
+
+  defp not_found(conn) do
+    conn
+    |> put_status(:not_found)
+    |> render(GoLinks.ErrorView, "404.html")
   end
 
   defp lookup_link(name) do

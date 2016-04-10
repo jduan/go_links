@@ -21,6 +21,13 @@
     <%= label f, :query_url, class: "control-label" %>
     <%= text_input f, :query_url, class: "form-control" %>
     <%= error_tag f, :query_url %>
+    <p> Optional. A "query url" is a url that contains query strings (%s).
+      For example, let's say a "go link" named "jira" has a query url like
+      "https://jira.yourcompany.com/browse/ABC-%s", it can be used like
+      "http://go/jira/1234" and it would redirect to
+      "https://jira.yourcompany.com/browse/ABC-1234". You can have multiple %s
+      in the query string.
+    </p>
   </div>
 
   <div class="form-group">
