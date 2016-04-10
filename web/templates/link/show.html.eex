@@ -12,6 +12,11 @@
     <%= @link.url %>
   </li>
 
+  <li>
+    <strong>Query Url:</strong>
+    <%= @link.query_url %>
+  </li>
+
 </ul>
 
 <%= link "Edit", to: link_path(@conn, :edit, @link) %>

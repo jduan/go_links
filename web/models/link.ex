@@ -4,12 +4,13 @@ defmodule GoLinks.Link do
   schema "links" do
     field :name, :string
     field :url, :string
+    field :query_url, :string
 
     timestamps
   end
 
   @required_fields ~w(name url)
-  @optional_fields ~w()
+  @optional_fields ~w(query_url)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

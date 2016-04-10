@@ -14,6 +14,7 @@
     <tr>
       <td><%= link.name %></td>
       <td><%= link.url %></td>
+      <td><%= link.query_url %></td>
 
       <td class="text-right">
         <%= link "Show", to: link_path(@conn, :show, link), class: "btn btn-default btn-xs" %>
