@@ -1,4 +1,5 @@
 defmodule GoLinks.LinkController do
+  require Logger
   use GoLinks.Web, :controller
 
   alias GoLinks.Link
@@ -16,6 +17,18 @@ defmodule GoLinks.LinkController do
   end
 
   def create(conn, %{"link" => link_params}) do
+    Logger.debug "create link: #{inspect link_params}"
+    existing_link = Repo.get_by(Link, name: link_params["name"])
+    if existing_link do
+      conn
+      |> put_status(:bad_request)
+      |> render(GoLinks.ErrorView, "400.html", message: "Link exists already!")
+    else
+      create_new_link(conn, link_params)
+    end
+  end
+
+  defp create_new_link(conn, link_params) do
     changeset = Link.changeset(%Link{}, link_params)
 
     case Repo.insert(changeset) do
