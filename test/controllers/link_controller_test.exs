@@ -2,12 +2,12 @@ defmodule GoLinks.LinkControllerTest do
   use GoLinks.ConnCase
 
   alias GoLinks.Link
-  @valid_attrs %{name: "some content", url: "some content"}
+  @valid_attrs %{name: "some content", url: "https://www.google.com"}
   @invalid_attrs %{}
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, link_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing links"
+    assert html_response(conn, 200) =~ "Go links"
   end
 
   test "renders form for new resources", %{conn: conn} do

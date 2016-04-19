@@ -3,7 +3,7 @@ defmodule GoLinks.LinkTest do
 
   alias GoLinks.Link
 
-  @valid_attrs %{name: "some content", url: "some content"}
+  @valid_attrs %{name: "some content", url: "https://www.google.com"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
