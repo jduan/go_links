@@ -11,20 +11,33 @@ defmodule GoLinks.RedirectController do
     [name | placeholders] = path
     IO.puts "redirect name: #{name}"
     IO.puts "redirect placeholders: #{inspect placeholders}"
-    do_redirect(conn, name, placeholders)
+    link = lookup_link(name)
+    case find_redirect_link(name, link, placeholders) do
+      {:ok, redirect_link} ->
+        Logger.debug "redirect to url: #{redirect_link}"
+        increment_visited(link)
+        redirect conn, external: redirect_link
+      {:not_found} -> not_found(conn)
+      {:bad_request, reason} ->
+        bad_request(conn, reason)
+    end
+  end
+
+  defp find_redirect_link(name, nil, []) do
+    Logger.debug "No golinks for name: #{name}"
+    {:not_found}
   end
 
   @doc """
   This is a simple redirect for just a name without additional placerholders.
   """
-  defp do_redirect(conn, name, []) do
-    Logger.debug "Simple redirect without query strings"
-    link = lookup_link(name)
+  defp find_redirect_link(name, link, []) do
+    Logger.debug "Simple redirect #{name} without query strings"
 
     if link do
-      redirect conn, external: link.url
+      {:ok, link.url}
     else
-      not_found(conn)
+      {:not_found}
     end
   end
 
@@ -34,25 +47,23 @@ defmodule GoLinks.RedirectController do
   * "name" would be "chill"
   * "args" would be ["1234", "pretty"]
   """
-  defp do_redirect(conn, name, args) do
+  defp find_redirect_link(name, link, args) do
     Logger.debug "redirect #{name} with query strings: #{inspect args}"
-    link = lookup_link(name)
 
     if link do
       query_url = link.query_url
       if query_url do
         case fill_query_url(query_url, args) do
           {filled_url, :ok} ->
-            Logger.debug "redirect to url: #{filled_url}"
-            redirect conn, external: filled_url
+            {:ok, filled_url}
           {_filled_url, :error} ->
-            bad_request(conn, "Bad request: you didn't provide enough query strings")
+            {:bad_request, "Bad request: you didn't provide enough query strings"}
         end
       else
-        bad_request(conn, "Bad request: this 'go link' doesn't support query strings")
+        {:bad_request, "Bad request: this 'go link' doesn't support query strings"}
       end
     else
-      not_found(conn)
+      {:not_found}
     end
   end
 
@@ -90,6 +101,18 @@ defmodule GoLinks.RedirectController do
       fill_query_url(replaced, rest)
     else
       {query_url, :ok}
+    end
+  end
+
+  defp increment_visited(link) do
+    visited = case link.visited do
+      nil -> 1
+      n -> n + 1
+    end
+    link = Ecto.Changeset.change link, visited: visited
+    case Repo.update link do
+      {:ok, _model} -> Logger.debug "Successfully incremented the visited column"
+      {:error, changeset} -> Logger.debug "Failed to increment the visited column: #{inspect changeset}"
     end
   end
 end

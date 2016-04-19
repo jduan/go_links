@@ -6,6 +6,7 @@ defmodule GoLinks.Link do
     field :name, :string
     field :url, :string
     field :query_url, :string
+    field :visited, :integer, default: 0
 
     timestamps
   end
