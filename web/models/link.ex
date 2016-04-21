@@ -23,6 +23,7 @@ defmodule GoLinks.Link do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> validate_length(:name, min: 1, max: 100)
     |> validate_change(:url, &url_validator/2)
     |> validate_change(:query_url, &url_validator/2)
   end

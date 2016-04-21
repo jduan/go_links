@@ -4,8 +4,6 @@ defmodule GoLinks.LinkController do
 
   alias GoLinks.Link
 
-  plug :scrub_params, "link" when action in [:create, :update]
-
   def index(conn, _params) do
     links = Repo.all(Link)
     render(conn, "index.html", links: links)

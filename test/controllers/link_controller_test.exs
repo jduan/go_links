@@ -3,7 +3,7 @@ defmodule GoLinks.LinkControllerTest do
 
   alias GoLinks.Link
   @valid_attrs %{name: "some content", url: "https://www.google.com"}
-  @invalid_attrs %{}
+  @invalid_attrs %{name: ""}
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, link_path(conn, :index)
