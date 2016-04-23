@@ -21,6 +21,16 @@ defmodule GoLinks.LinkControllerTest do
     assert Repo.get_by(Link, @valid_attrs)
   end
 
+  test "returns 404 when link already exists", %{conn: conn} do
+    conn = post conn, link_path(conn, :create), link: @valid_attrs
+    assert redirected_to(conn) == link_path(conn, :index)
+    assert Repo.get_by(Link, @valid_attrs)
+
+    # post again
+    conn = post conn, link_path(conn, :create), link: @valid_attrs
+    assert html_response(conn, 400) =~ "Link exists already!"
+  end
+
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
     conn = post conn, link_path(conn, :create), link: @invalid_attrs
     assert html_response(conn, 200) =~ "New link"
