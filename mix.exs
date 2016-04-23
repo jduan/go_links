@@ -10,6 +10,7 @@ defmodule GoLinks.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases,
+     test_coverage: [tool: ExCoveralls],
      deps: deps]
   end
 
@@ -36,7 +37,9 @@ defmodule GoLinks.Mixfile do
      {:phoenix_html, "~> 2.4"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
-     {:cowboy, "~> 1.0"}]
+     {:cowboy, "~> 1.0"},
+     {:excoveralls, "~> 0.4", only: :test},
+   ]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
