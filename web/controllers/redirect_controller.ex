@@ -7,10 +7,10 @@ defmodule GoLinks.RedirectController do
   alias GoLinks.Link
 
   def handle_redirect(conn, %{"path" => path} = params) do
-    IO.puts "params: #{inspect params}"
+    Logger.debug "params: #{inspect params}"
     [name | placeholders] = path
-    IO.puts "redirect name: #{name}"
-    IO.puts "redirect placeholders: #{inspect placeholders}"
+    Logger.debug "redirect name: #{name}"
+    Logger.debug "redirect placeholders: #{inspect placeholders}"
     link = lookup_link(name)
     case find_redirect_link(name, link, placeholders) do
       {:ok, redirect_link} ->
